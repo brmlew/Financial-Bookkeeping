@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="ISO-8859-1">
+
+<title>Login</title>
+<script src="jquery-3.5.1.min.js"></script>
+<script>
+	$(document).ready(function(){
+
+		$("#search").click(function() {
+			document.location.href = "search.html";
+		});
+		
+		$("#signUp").click(function() {
+			document.location.href = "signUp.html";
+		});
+		
+		$("#reset").click(function() {
+			document.location.href = "resetPassword.html";
+		});
+		
+        $("#login").click(function() {
+			var username = $("#username").val();
+            var password = $("#password").val();
+			
+            const url='/Website/login?username=' + username + '&password=' + password;
+            $.get(url, function(data, status){
+            	if (status == "success") {
+               		if (data == 0) {
+               			$("#ErrorMessage").show();
+               		} 
+               		else {
+               			$("#ErrorMessage").hide();
+               			document.location.href = "account.html?id=" + data;
+               		}
+                       
+               	}
+            });
+            
+            
+            return false;
+       });
+
+
+	});
+		
+</script>
+</head>
+
+<body>
+	<div id="ErrorMessage" style="display:none;color:red">Password incorrect</div>
+    <form>
+           Username: <input type="text" id="username"/> <br/>
+           Password: <input type="password" id="password"/> <br/>
+           <input type="submit" value="Login" id="login"/>
+    </form>
+	<button type="button" id="reset">Reset Password</button>
+	<button type="button" id="signUp">Sign up</button>
+	<button type="button" id="search">Search</button>
+    
+</body>
+
+</html>

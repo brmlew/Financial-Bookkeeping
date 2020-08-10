@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="ISO-8859-1">
+
+<title>Login</title>
+<script>
+		function search() {
+			document.location.href = "search.html";
+		}
+		function signUp() {
+			document.location.href = "signUp.html";
+		}
+		function reset() {
+			document.location.href = "resetPassword.html";
+		}
+		
+       function login() {
+
+             var username = document.getElementById("username").value;
+             var password = document.getElementById("password").value;
+
+             const request = new XMLHttpRequest();
+             const url='/Website/login?username=' + username + '&password=' + password;
+
+             request.onreadystatechange= function() {
+                    if (this.readyState == 4) {
+                    	if (this.status == 200) {
+                    		if (request.responseText == 0) {
+                    			document.getElementById("ErrorMessage").style.display = "";
+                    		} 
+                    		else {
+                    			document.getElementById("ErrorMessage").style.display = "none";
+                    			document.location.href = "account.html?id=" + request.responseText;
+                    		}
+                            
+                    	}
+                    	else  {
+                         //request failed
+                                 alert("Error making ajax call");
+                           }
+                    }
+             }
+
+             request.open("GET", url, false);
+             request.send();
+             return false;
+       }
+
+</script>
+</head>
+
+<body>
+	<div id="ErrorMessage" style="display:none;color:red">Password incorrect</div>
+    <form>
+           Username: <input type="text" id="username"/> <br/>
+           Password: <input type="password" id="password"/> <br/>
+           <input type="submit" value="Login" onclick="return login()"/>
+    </form>
+	<button type="button" onClick="reset()">Reset Password</button>
+	<button type="button" onClick="signUp()">Sign up</button>
+	<button type="button" onClick="search()">Search</button>
+    
+</body>
+
+</html>

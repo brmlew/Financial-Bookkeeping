@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script src="jquery-3.5.1.min.js"></script>
+<script>
+	var urlParams = new URLSearchParams(window.location.search);
+	var id = urlParams.get("id");
+	$(document).ready(function(){
+		
+		getInfo();
+		$("#logout").click(function logout() {
+			document.location.href = "index.html";
+		});
+		
+		$("#cancel").click(function cancel() {
+			$("#readOnly").show();
+			$("#edit").hide();
+			$("#cancel").hide();
+			$("#save").hide();
+			$("#editButton").show();
+		});
+		
+		$("#editButton").click(function edit() {
+			$("#readOnly").hide();
+			$("#edit").show();
+			$("#cancel").show();
+			$("#save").show();
+			$("#editButton").hide();
+		});
+		
+		$("#save").click(function save() {
+	        var firstName = $("#editFirstName").val();
+	        var lastName = $("#editLastName").val();
+	        var emailAddress = $("#editEmailAddress").val();
+	        var phoneNumber = $("#editPhoneNumber").val();
+	        var streetNumber = $("#editStreetNumber").val();
+	        var streetName = $("#editStreetName").val();
+	        var city = $("#editCity").val();
+	        var country = $("#editCountry").val();
+	        var postalCode = $("#editPostalCode").val();
+	        if (isNaN(streetNumber)) {
+	       	 alert("Street Number is not a number");
+	       	 return;
+	        }
+	        
+	        var personalInfo = {
+	       		 "Id" : id,
+	       		 "firstName" : firstName,
+	       		 "lastName" : lastName,
+	       		 "emailAddress" : emailAddress,
+	       		 "phoneNumber" : phoneNumber,
+	       		 "address" : {
+	       			 "streetNumber" : streetNumber,
+	       			 "streetName" : streetName,
+	       			 "city" : city,
+	       			 "country" : country,
+	       			 "postalCode" : postalCode,
+	       		 }
+	      		 
+	       		 
+	        }
+	        const json=JSON.stringify(personalInfo); 
+			
+	        $.post("/Website/personalInfo", json, function(data, status){
+            	if (status == "success") {
+            		if (data == 0) {
+              			$("#ErrorMessage").show();
+              		} 
+              		else {
+              			$("#SuccessMessage").show();
+              		}
+                       
+               	}
+            });
+	        $("#readOnly").show();
+			$("#edit").hide();
+			$("#cancel").hide();
+			$("#save").hide();
+			$("#editButton").show();
+	        
+	        /* request.onreadystatechange= function() {
+	               if (this.readyState == 4) {
+	               	if (this.status == 200) {
+	               		if (request.responseText == 0) {
+	                  			$("#ErrorMessage").show();
+	                  		} 
+	                  		else {
+	                  			$("#SuccessMessage").show();
+	                  		}
+	               	}
+	               	else  {
+	                    //request failed
+	                            alert("Error making ajax call");
+	                      }
+	               }
+	        }
+			 
+	        request.open("POST", "/Website/personalInfo");
+	        request.setRequestHeader("Content-Type", "application/json");
+	        request.send(url); */
+		});
+		
+		function getInfo() {
+			
+	        const request = new XMLHttpRequest();
+	        const url='/Website/personalInfo?id=' + id;
+			
+	        $.get(url, function(data, status){
+            	if (status == "success") {
+            		var obj = JSON.parse(data);
+               		$("#firstName").html(obj.firstName);
+               		$("#lastName").html(obj.lastName);
+               		$("#email").html(obj.emailAddress);
+               		$("#phone").html(obj.phoneNumber);
+               		$("#streetNumber").html(obj.address.streetNumber);
+               		$("#streetName").html(obj.address.streetName);
+               		$("#city").html(obj.address.city);
+               		$("#country").html(obj.address.country);
+               		$("#postalCode").html(obj.address.postalCode);
+               		$("#username").html(obj.loginInfo.userName);
+               		$("#password").html(obj.loginInfo.password);
+               		$("#lastLogin").html(obj.loginInfo.lastLogin);
+               		$("#editFirstName").val(obj.firstName);
+               		$("#editLastName").val(obj.lastName);
+               		$("#editEmailAddress").val(obj.emailAddress);
+               		$("#editPhoneNumber").val(obj.phoneNumber);
+               		$("#editStreetNumber").val(obj.address.streetNumber);
+               		$("#editStreetName").val(obj.address.streetName);
+               		$("#editCity").val(obj.address.city);
+               		$("#editCountry").val(obj.address.country);
+               		$("#editPostalCode").val(obj.address.postalCode);
+                       
+               	}
+            });
+	        /* request.onreadystatechange= function() {
+	               if (this.readyState == 4) {
+	               	if (this.status == 200) {
+	               		var obj = JSON.parse(request.responseText);
+	               		$("#firstName").innerHTML = obj.firstName;
+	               		$("#lastName").innerHTML = obj.lastName;
+	               		$("#email").innerHTML = obj.emailAddress;
+	               		$("#phone").innerHTML = obj.phoneNumber;
+	               		$("#streetNumber").innerHTML = obj.address.streetNumber;
+	               		$("#streetName").innerHTML = obj.address.streetName;
+	               		$("#city").innerHTML = obj.address.city;
+	               		$("#country").innerHTML = obj.address.country;
+	               		$("#postalCode").innerHTML = obj.address.postalCode;
+	               		$("#username").innerHTML = obj.loginInfo.userName;
+	               		$("#password").innerHTML = obj.loginInfo.password;
+	               		$("#lastLogin").innerHTML = obj.loginInfo.lastLogin;
+	               		$("#editFirstName").value = obj.firstName;
+	               		$("#editLastName").value = obj.lastName;
+	               		$("#editEmailAddress").value = obj.emailAddress;
+	               		$("#editPhoneNumber").value = obj.phoneNumber;
+	               		$("#editStreetNumber").value = obj.address.streetNumber;
+	               		$("#editStreetName").value = obj.address.streetName;
+	               		$("#editCity").value = obj.address.city;
+	               		$("#editCountry").value = obj.address.country;
+	               		$("#editPostalCode").value = obj.address.postalCode;
+	               	}
+	               	else  {
+	                    //request failed
+	                            alert("Error making ajax call");
+	                      }
+	               }
+	        }
+
+	        request.open("GET", url, false);
+	        request.send(); */
+	        return false;
+	  }
+	});
+	
+	
+</script>
+</head>
+<body>
+	<div id="ErrorMessage" style="display:none;color:red">Error</div>
+	<div id="SuccessMessage" style="display:none;color:blue">Account Information Edited</div>
+	<div id="readOnly">
+		<table border="1">
+			<tr>
+				<td width="100px"><b>First Name</b></td>
+				<td width="250px" id="firstName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Last Name</b></td>
+				<td width="250px" id="lastName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Email</b></td>
+				<td width="250px" id="email">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Phone Number</b></td>
+				<td width="250px" id="phone">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Street Number</b></td>
+				<td width="250px" id="streetNumber">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Street</b></td>
+				<td width="250px" id="streetName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>City</b></td>
+				<td width="250px" id="city">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Country</b></td>
+				<td width="250px" id="country">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Postal Code</b></td>
+				<td width="250px" id="postalCode">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Username</b></td>
+				<td width="250px" id="username">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Password</b></td>
+				<td width="250px" id="password">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Last Login</b></td>
+				<td width="250px" id="lastLogin">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="edit" style="display:none">
+		First Name: <input type="text" id="editFirstName"/> <br/>
+        Last Name: <input type="text" id="editLastName"/> <br/>
+        Email Address: <input type="text" id="editEmailAddress"/> <br/>
+        Phone Number: <input type="text" id="editPhoneNumber"/> <br/>
+        Street Number: <input type="text" id="editStreetNumber"/> <br/>
+        Street Name: <input type="text" id="editStreetName"/> <br/>
+        City: <input type="text" id="editCity"/> <br/>
+        Country: <input type="text" id="editCountry"/> <br/>
+        Postal Code: <input type="text" id="editPostalCode"/> <br/>
+	</div>
+	<br>
+	<button type="button" id="logout">Logout</button>
+	<button type="button" id="editButton">Edit</button>
+	<button type="button" id="cancel" style="display:none">Cancel</button>
+	<button type="button" id="save" style="display:none">Save</button>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script>
+	var urlParams = new URLSearchParams(window.location.search);
+	var id = urlParams.get("id");
+
+	function logout() {
+		document.location.href = "index.html";
+	}
+	
+	function cancel() {
+		document.getElementById("readOnly").style.display="";
+		document.getElementById("edit").style.display="none";
+		document.getElementById("cancel").style.display="none"
+		document.getElementById("save").style.display="none";
+	}
+	
+	function edit() {
+		document.getElementById("readOnly").style.display="none";
+		document.getElementById("edit").style.display="";
+		document.getElementById("cancel").style.display=""
+		document.getElementById("save").style.display="";
+	}
+	
+	function save() {
+        var firstName = document.getElementById("editFirstName").value;
+        var lastName = document.getElementById("editLastName").value;
+        var emailAddress = document.getElementById("editEmailAddress").value;
+        var phoneNumber = document.getElementById("editPhoneNumber").value;
+        var streetNumber = document.getElementById("editStreetNumber").value;
+        var streetName = document.getElementById("editStreetName").value;
+        var city = document.getElementById("editCity").value;
+        var country = document.getElementById("editCountry").value;
+        var postalCode = document.getElementById("editPostalCode").value;
+        if (isNaN(streetNumber)) {
+       	 alert("Street Number is not a number");
+       	 return;
+        }
+        
+        var personalInfo = {
+       		 "Id" : id,
+       		 "firstName" : firstName,
+       		 "lastName" : lastName,
+       		 "emailAddress" : emailAddress,
+       		 "phoneNumber" : phoneNumber,
+       		 "address" : {
+       			 "streetNumber" : streetNumber,
+       			 "streetName" : streetName,
+       			 "city" : city,
+       			 "country" : country,
+       			 "postalCode" : postalCode,
+       		 }
+      		 
+       		 
+        }
+        const request = new XMLHttpRequest();
+        const url=JSON.stringify(personalInfo); 
+
+        request.onreadystatechange= function() {
+               if (this.readyState == 4) {
+               	if (this.status == 200) {
+               		if (request.responseText == 0) {
+                  			document.getElementById("ErrorMessage").style.display = "";
+                  		} 
+                  		else {
+                  			document.getElementById("SuccessMessage").style.display = "";
+                  		}
+               	}
+               	else  {
+                    //request failed
+                            alert("Error making ajax call");
+                      }
+               }
+        }
+		 
+        request.open("POST", "/Website/personalInfo");
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(url);
+	}
+	
+	function getInfo() {
+		
+        const request = new XMLHttpRequest();
+        const url='/Website/personalInfo?id=' + id;
+
+        request.onreadystatechange= function() {
+               if (this.readyState == 4) {
+               	if (this.status == 200) {
+               		var obj = JSON.parse(request.responseText);
+               		document.getElementById("firstName").innerHTML = obj.firstName;
+               		document.getElementById("lastName").innerHTML = obj.lastName;
+               		document.getElementById("email").innerHTML = obj.emailAddress;
+               		document.getElementById("phone").innerHTML = obj.phoneNumber;
+               		document.getElementById("streetNumber").innerHTML = obj.address.streetNumber;
+               		document.getElementById("streetName").innerHTML = obj.address.streetName;
+               		document.getElementById("city").innerHTML = obj.address.city;
+               		document.getElementById("country").innerHTML = obj.address.country;
+                    document.getElementById("postalCode").innerHTML = obj.address.postalCode;
+                    document.getElementById("username").innerHTML = obj.loginInfo.userName;
+                    document.getElementById("password").innerHTML = obj.loginInfo.password;
+                    document.getElementById("lastLogin").innerHTML = obj.loginInfo.lastLogin;
+                    document.getElementById("editFirstName").value = obj.firstName;
+               		document.getElementById("editLastName").value = obj.lastName;
+               		document.getElementById("editEmailAddress").value = obj.emailAddress;
+               		document.getElementById("editPhoneNumber").value = obj.phoneNumber;
+               		document.getElementById("editStreetNumber").value = obj.address.streetNumber;
+               		document.getElementById("editStreetName").value = obj.address.streetName;
+               		document.getElementById("editCity").value = obj.address.city;
+               		document.getElementById("editCountry").value = obj.address.country;
+                    document.getElementById("editPostalCode").value = obj.address.postalCode;
+               	}
+               	else  {
+                    //request failed
+                            alert("Error making ajax call");
+                      }
+               }
+        }
+
+        request.open("GET", url, false);
+        request.send();
+        return false;
+  }
+</script>
+</head>
+<body onload=getInfo()>
+	<div id="ErrorMessage" style="display:none;color:red">Error</div>
+	<div id="SuccessMessage" style="display:none;color:blue">Account Information Edited</div>
+	<div id="readOnly">
+		<table border="1">
+			<tr>
+				<td width="100px"><b>First Name</b></td>
+				<td width="250px" id="firstName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Last Name</b></td>
+				<td width="250px" id="lastName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Email</b></td>
+				<td width="250px" id="email">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Phone Number</b></td>
+				<td width="250px" id="phone">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Street Number</b></td>
+				<td width="250px" id="streetNumber">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Street</b></td>
+				<td width="250px" id="streetName">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>City</b></td>
+				<td width="250px" id="city">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Country</b></td>
+				<td width="250px" id="country">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Postal Code</b></td>
+				<td width="250px" id="postalCode">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Username</b></td>
+				<td width="250px" id="username">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Password</b></td>
+				<td width="250px" id="password">
+				</td>
+			</tr>
+			<tr>
+				<td width="100px"><b>Last Login</b></td>
+				<td width="250px" id="lastLogin">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="edit" style="display:none">
+		First Name: <input type="text" id="editFirstName"/> <br/>
+        Last Name: <input type="text" id="editLastName"/> <br/>
+        Email Address: <input type="text" id="editEmailAddress"/> <br/>
+        Phone Number: <input type="text" id="editPhoneNumber"/> <br/>
+        Street Number: <input type="text" id="editStreetNumber"/> <br/>
+        Street Name: <input type="text" id="editStreetName"/> <br/>
+        City: <input type="text" id="editCity"/> <br/>
+        Country: <input type="text" id="editCountry"/> <br/>
+        Postal Code: <input type="text" id="editPostalCode"/> <br/>
+	</div>
+	<br>
+	<button type="button" onClick="logout()">Logout</button>
+	<button type="button" id="edit" onClick="edit()">Edit</button>
+	<button type="button" id="cancel" onClick="cancel()">Cancel</button>
+	<button type="button" id="save" onClick="save()" style="display:none">Save</button>
+</body>
+</html>

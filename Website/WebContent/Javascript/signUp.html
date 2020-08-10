@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="ISO-8859-1">
+
+<title>Login</title>
+<script>
+		function cancel() {
+			document.location.href = "index.html";
+		}
+		
+       function signUp() {
+
+             var username = document.getElementById("username").value;
+             var password = document.getElementById("password").value;
+             var firstName = document.getElementById("firstName").value;
+             var lastName = document.getElementById("lastName").value;
+             var emailAddress = document.getElementById("emailAddress").value;
+             var phoneNumber = document.getElementById("phoneNumber").value;
+             var streetNumber = document.getElementById("streetNumber").value;
+             var streetName = document.getElementById("streetName").value;
+             var city = document.getElementById("city").value;
+             var country = document.getElementById("country").value;
+             var postalCode = document.getElementById("postalCode").value;
+             if (isNaN(streetNumber)) {
+            	 alert("Street Number is not a number");
+            	 return;
+             }
+             
+             var personalInfo = {
+            		 "id" : "0",
+            		 "firstName" : firstName,
+            		 "lastName" : lastName,
+            		 "emailAddress" : emailAddress,
+            		 "phoneNumber" : phoneNumber,
+            		 "address" : {
+            			 "streetNumber" : streetNumber,
+            			 "streetName" : streetName,
+            			 "city" : city,
+            			 "country" : country,
+            			 "postalCode" : postalCode,
+            		 },
+             		"loginInfo" : {
+             			"userName" : username,
+             			"password" : password,
+              		}
+            		 
+            		 
+             }
+
+             const request = new XMLHttpRequest();
+             const url=JSON.stringify(personalInfo); 
+
+             request.onreadystatechange= function() {
+                    if (this.readyState == 4) {
+                    	if (this.status == 200) {
+                    		if (request.responseText == 0) {
+                       			document.getElementById("ErrorMessage").style.display = "";
+                       		} 
+                       		else {
+                       			document.getElementById("successMessage").style.display = "";
+                       		}
+                    	}
+                    	else  {
+                         //request failed
+                                 alert("Error making ajax call");
+                           }
+                    }
+             }
+			 
+             request.open("POST", "/Website/personalInfo");
+             request.setRequestHeader("Content-Type", "application/json");
+             request.send(url);
+       }
+
+</script>
+</head>
+
+<body>
+	<div id="ErrorMessage" style="display:none;color:red">Error</div>
+	<div id="successMessage" style="display:none;color:blue">Account Created</div>
+    <form>
+           Username: <input type="text" id="username"/> <br/>
+           Password: <input type="password" id="password"/> <br/>
+           First Name: <input type="text" id="firstName"/> <br/>
+           Last Name: <input type="text" id="lastName"/> <br/>
+           Email Address: <input type="text" id="emailAddress"/> <br/>
+           Phone Number: <input type="text" id="phoneNumber"/> <br/>
+           Street Number: <input type="text" id="streetNumber"/> <br/>
+           Street Name: <input type="text" id="streetName"/> <br/>
+           City: <input type="text" id="city"/> <br/>
+           Country: <input type="text" id="country"/> <br/>
+           Postal Code: <input type="text" id="postalCode"/> <br/>
+           <input type="submit" value="Sign Up" onclick="signUp(); return false;"/>
+    </form>
+	<button type="button" onClick="cancel()">Cancel</button>
+    
+</body>
+
+</html>
