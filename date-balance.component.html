@@ -1,0 +1,21 @@
+<div class="form-group">
+  <label for="asOfDate">As of Date</label>
+  <input type="text" class="form-control" id="asOfDate"
+         [(ngModel)]="dateBalance.date" name="asOfDate" required
+         bsDatepicker [maxDate]="maxDate" [bsConfig]="{dateInputFormat:'YYYY-MM-DD'}"
+         #asOfDate="ngModel" placeholder="Pick a date" (ngModelChange)="output()">
+  <div *ngIf="asOfDate.invalid && (asOfDate.dirty || asOfDate.touched)"
+       class="alert alert-danger">
+    <div *ngIf="asOfDate.errors.required">Date is required</div>
+  </div>
+</div>
+<div class="form-group">
+  <label for="transactionAmount">Balance</label>
+  <input type="number" class="form-control" id="transactionAmount"
+         [(ngModel)]="dateBalance.balance" name="balance" required
+         #balance="ngModel" placeholder="Enter balance" (ngModelChange)="output()">
+  <div *ngIf="balance.invalid && (balance.dirty || balance.touched)"
+       class="alert alert-danger">
+    <div *ngIf="balance.errors.required">Balance is required</div>
+  </div>
+</div>

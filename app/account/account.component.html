@@ -1,0 +1,80 @@
+<div class="container">
+  <div id="viewInfo">
+    <h2>Welcome {{this.info.firstName}}</h2>
+    <h4>Your last login was on {{this.info.loginInfo.lastLogin}}</h4>
+    <div id="navcontainer">
+      <ul>
+        <li><a (click)="showMyAccounts()">My Accounts</a></li>
+        <li><a (click)="showMyExpenses()">Expenses</a></li>
+        <li><a (click)="showPersonalInfo()">Personal Information</a></li>
+      </ul>
+    </div>
+    <div *ngIf="saved">New account saved</div>
+    <div *ngIf="showAccounts" class="margin-top">
+      <table width="40%" *ngIf="accounts.length > 0" class="c-table">
+        <tr class="borderBottom">
+          <th>Account</th>
+          <th>Date</th>
+          <th>Balance</th>
+        </tr>
+        <tr *ngFor="let account of this.accounts">
+          <td><a (click)="getAccountHistory(account.name)" >{{account.name}}</a></td>
+          <td>{{account.asOfDate}}</td>
+          <td>{{account.balance}}</td>
+        </tr>
+      </table>
+    </div>
+    <div *ngIf="showAccountHistory" class="margin-top">
+      <h4>Showing account history for {{selectedAccount}}</h4>
+      <table width="40%" *ngIf="accountHistory.length > 0" class="c-table">
+        <tr class="borderBottom">
+          <th>Date</th>
+          <th>Balance</th>
+        </tr>
+        <tr *ngFor="let account of this.accountHistory">
+          <td>{{account.asOfDate}}</td>
+          <td>{{account.balance}}</td>
+        </tr>
+      </table>
+      <div class="margin-top" *ngIf="!addingBalance">
+        <button class="btn btn-success" (click)="addBalance()">Add new balance</button>
+      </div>
+      <form #balanceForm="ngForm" *ngIf="addingBalance">
+        <h4>Please enter account details</h4>
+        <app-date-balance (myOutput)="updated($event)"></app-date-balance>
+
+        <button class="btn btn-success" (click)="saveBalance()" [disabled]="!(balanceForm.form.valid)">Save</button> &nbsp;
+        <button class="btn btn-default" (click)="cancelBalance()">Cancel</button> &nbsp;
+      </form>
+    </div>
+    <app-expenses *ngIf="showExpenses" [id]="id"></app-expenses>
+    <app-personalInfo *ngIf="showPersonalInformation" [info]="info"></app-personalInfo>
+  </div>
+  <div class="margin-top" *ngIf="!showExpenses && !showPersonalInformation && !addingAccount && !showAccountHistory">
+    <button class="btn btn-success" (click)="addAccount()">Add Account</button>
+  </div>
+  <div class="margin-top" *ngIf="addingAccount && !showExpenses && !showPersonalInformation && !showAccountHistory">
+    <h4>Please enter account details</h4>
+    <div *ngIf="error" style="color: red">New account not saved</div>
+    <form #accountForm="ngForm">
+      <div class="form-group">
+        <label for="name">Account name</label>
+        <input type="text" class="form-control" id="name"
+               [(ngModel)]="account.name" name="name"
+               maxlength="50" required
+               #notes="ngModel" placeholder="Enter name" #name="ngModel">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="alert alert-danger">
+          <div *ngIf="name.errors.required">Name is required</div>
+        </div>
+      </div>
+      <app-date-balance (myOutput)="updated($event)"></app-date-balance>
+
+      <button class="btn btn-success" (click)="saveAccount()" [disabled]="!(accountForm.form.valid)">Save</button> &nbsp;
+      <button class="btn btn-default" (click)="cancel()">Cancel</button> &nbsp;
+    </form>
+  </div>
+  <div class="margin-top">
+    <button class="btn btn-default" (click)="logout()">Logout</button>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="margin-top">
+  <div class="margin-top">
+    <div *ngIf="saved">New expense saved</div>
+    <table *ngIf="expenses.length > 0">
+      <tr class="borderBottom">
+        <th width="200px">Transaction Date</th>
+        <th width="200px">Transaction Amount</th>
+        <th width="100px">Type</th>
+        <th width="200px">Notes</th>
+      </tr>
+      <tr *ngFor="let expense of this.expenses">
+        <td>{{expense.transactionDate}}</td>
+        <td>{{expense.transactionAmount}}</td>
+        <td>{{expense.transactionType}}</td>
+        <td>{{expense.notes}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="margin-top" *ngIf="!addingExpense">
+    <button class="btn btn-success" (click)="addExpense()">New Expense</button>
+  </div>
+  <div class="margin-top" *ngIf="addingExpense">
+    <h4>Please enter transaction details</h4>
+    <div *ngIf="error" style="color: red">New expense not saved</div>
+    <form #expenseForm="ngForm">
+      <app-date-balance (myOutput)="updated($event)"></app-date-balance>
+      <div class="form-group">
+        <label for="transactionType">Transaction Type</label>
+        <select [(ngModel)]="expense.transactionType" id="transactionType" required #transactionType="ngModel"
+                class="form-control" [ngModelOptions]="{standalone: true}">
+          <option value="Gas">Gas</option>
+          <option value="Transportation">Transportation</option>
+          <option value="Food">Food</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Credit Card">Credit Card</option>
+          <option value="Hydro">Hydro</option>
+        </select>
+        <div *ngIf="transactionType.invalid && (transactionType.dirty || transactionType.touched)"
+             class="alert alert-danger">
+          <div *ngIf="transactionType.errors.required">Transaction type is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <input type="text" class="form-control" id="notes"
+               [(ngModel)]="expense.notes" name="notes"
+               maxlength="50"
+               #notes="ngModel" placeholder="Enter notes">
+      </div>
+      <button class="btn btn-success" (click)="saveExpense()" [disabled]="!(expenseForm.form.valid)">Save</button> &nbsp;
+      <button class="btn btn-default" (click)="cancel()">Cancel</button> &nbsp;
+    </form>
+  </div>
+</div>
